@@ -1,17 +1,22 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable no-console */
-import Validator from 'fastest-validator';
 import { Storage } from '@google-cloud/storage';
 import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
 import { Articles, ArticleImages } from '../models/ArticlesModel.js';
 import { errorResponse, successResponse } from '../config/Response.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const v = new Validator();
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const path = await import('path');
+const keyFilename = path.resolve(__dirname, '..', 'config', 'key.json');
+
 
 const storage = new Storage({
   projectId: 'testing-backend-388116',
-  keyFilename: '../config/key.json',
+  keyFilename,
 });
 
 const bucketName = 'images-berasai';
@@ -46,48 +51,50 @@ export const getArticlesById = async (req, res) => {
   }
 };
 
-export const createArticle = async (req, res) => {
-  const schema = {
-    judul: { type: 'string', min: 3, max: 255 },
-    author: { type: 'string', min: 3, max: 255 },
-    content: { type: 'string', min: 3, max: 255 },
-    images: {
-      type: 'array',
-      items: 'string',
-      min: 1,
-      max: 10,
-    },
-  };
-  const validate = v.validate(req.body, schema);
-  if (validate.length) {
-    return errorResponse(res, validate, 400);
+const uploadImages = async (files, articleId) => {
+  const uploadedImages = [];
+  const gcsBaseUrl = `https://storage.googleapis.com/${bucketName}/`;
+
+  // Jika hanya ada satu file, ubah ke dalam array agar bisa diiterasi
+  if (!Array.isArray(files)) {
+    files = [files];
   }
+
+  for (const file of files) {
+    const fileExtension = path.extname(file.name);
+    const fileName = `${uuidv4()}${fileExtension}`;
+    const filePath = `articles/${articleId}/${fileName}`;
+
+    const fileBuffer = file.data;
+
+    await storage.bucket(bucketName).file(filePath).save(fileBuffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
+
+    const imageEntry = await ArticleImages.create({
+      imagePath: `${gcsBaseUrl}${filePath}`, // Simpan URL lengkap sebagai imagePath
+      articleId,
+    });
+
+    uploadedImages.push(imageEntry);
+  }
+
+  return uploadedImages;
+};
+
+export const createArticle = async (req, res) => {
+  const { judul, author, content } = req.body;
 
   try {
     const article = await Articles.create({
-      judul: req.body.judul,
-      author: req.body.author,
-      content: req.body.content,
+      judul,
+      author,
+      content,
     });
 
-    const uploadedImages = await Promise.all(
-      req.body.images.map(async (image) => {
-        const fileExtension = path.extname(image);
-        const fileName = `${uuidv4()}${fileExtension}`;
-        const filePath = `articles/${article.id}/${fileName}`;
-
-        await storage.bucket(bucketName).upload(image, {
-          destination: filePath,
-        });
-
-        const imageEntry = await ArticleImages.create({
-          imagePath: filePath,
-          articleId: article.id,
-        });
-
-        return imageEntry;
-      }),
-    );
+    const uploadedImages = await uploadImages(req.files['images'], article.id);
 
     article.article_images = uploadedImages;
 
@@ -109,65 +116,24 @@ export const updateArticle = async (req, res) => {
     return errorResponse(res, 'Artikel tidak ditemukan', 404);
   }
 
-  const schema = {
-    judul: {
-      type: 'string', min: 3, max: 255, optional: true,
-    },
-    author: {
-      type: 'string', min: 3, max: 255, optional: true,
-    },
-    content: {
-      type: 'string', min: 3, max: 255, optional: true,
-    },
-    images: {
-      type: 'array',
-      items: 'string',
-      optional: true,
-      min: 1,
-      max: 10,
-    },
-  };
-  const validate = v.validate(req.body, schema);
-  if (validate.length) {
-    return errorResponse(res, validate, 400);
-  }
+  const { judul, author, content, images } = req.body;
 
   try {
     await article.update({
-      judul: req.body.judul || article.judul,
-      author: req.body.author || article.author,
-      content: req.body.content || article.content,
+      judul: judul || article.judul,
+      author: author || article.author,
+      content: content || article.content,
     });
 
-    if (req.body.images && req.body.images.length > 0) {
+    if (images && images.length > 0) {
       await Promise.all(
         article.article_images.map(async (imageEntry) => {
-          await storage
-            .bucket(bucketName)
-            .file(imageEntry.imagePath)
-            .delete();
+          await storage.bucket(bucketName).file(imageEntry.imagePath).delete();
           await imageEntry.destroy();
-        }),
+        })
       );
 
-      const uploadedImages = await Promise.all(
-        req.body.images.map(async (image) => {
-          const fileExtension = path.extname(image);
-          const fileName = `${uuidv4()}${fileExtension}`;
-          const filePath = `articles/${article.id}/${fileName}`;
-
-          await storage.bucket(bucketName).upload(image, {
-            destination: filePath,
-          });
-
-          const imageEntry = await ArticleImages.create({
-            imagePath: filePath,
-            articleId: article.id,
-          });
-
-          return imageEntry;
-        }),
-      );
+      const uploadedImages = await uploadImages(images, article.id);
 
       article.article_images = uploadedImages;
     }
@@ -193,9 +159,10 @@ export const deleteArticle = async (req, res) => {
   try {
     await Promise.all(
       article.article_images.map(async (imageEntry) => {
-        await storage.bucket(bucketName).file(imageEntry.imagePath).delete();
+        const imagePath = imageEntry.imagePath.replace(`https://storage.googleapis.com/${bucketName}/`, '');
+        await storage.bucket(bucketName).file(imagePath).delete();
         await imageEntry.destroy();
-      }),
+      })
     );
 
     await article.destroy();
@@ -206,3 +173,4 @@ export const deleteArticle = async (req, res) => {
     return errorResponse(res);
   }
 };
+
