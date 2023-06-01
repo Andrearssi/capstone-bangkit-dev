@@ -5,14 +5,11 @@ import { errorResponse, successResponse } from '../config/Response.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const path = await import('path');
 const keyFilename = path.resolve(__dirname, '..', 'config', 'key.json');
-
 
 const storage = new Storage({
   projectId: 'testing-backend-388116',
@@ -24,7 +21,6 @@ const bucketName = 'images-berasai';
 export const getArticles = async (req, res) => {
   try {
     const articles = await Articles.findAll({
-      attributes: ['id', 'judul', 'author', 'content'],
       include: ArticleImages,
     });
     return successResponse(res, articles);
@@ -38,11 +34,10 @@ export const getArticlesById = async (req, res) => {
   try {
     const { id } = req.params;
     const article = await Articles.findByPk(id, {
-      attributes: ['id', 'judul', 'author', 'content'],
       include: ArticleImages,
     });
     if (!article) {
-      return errorResponse(res, 'Artikel tidak ditemukan', 404);
+      return errorResponse(res, 'article not found', 404);
     }
     return successResponse(res, article);
   } catch (error) {
@@ -87,6 +82,18 @@ const uploadImages = async (files, articleId) => {
 export const createArticle = async (req, res) => {
   const { judul, author, content } = req.body;
 
+  const schema = {
+    judul: { type: "string", min: 3, max: 255 },
+    author: { type: "string", min: 3, max: 255 },
+    content: { type: "string", min: 3 },
+  };
+
+  const validate = v.validate(req.body, schema);
+
+  if (validate.length) {
+    return errorResponse(res, validate, 400);
+  }
+
   try {
     const article = await Articles.create({
       judul,
@@ -98,7 +105,7 @@ export const createArticle = async (req, res) => {
 
     article.article_images = uploadedImages;
 
-    return successResponse(res, article, 'Artikel berhasil dibuat', 201);
+    return successResponse(res, article, 'article not found', 201);
   } catch (error) {
     console.log(error);
     return errorResponse(res);
@@ -113,10 +120,22 @@ export const updateArticle = async (req, res) => {
   });
 
   if (!article) {
-    return errorResponse(res, 'Artikel tidak ditemukan', 404);
+    return errorResponse(res, 'article not found', 404);
   }
 
   const { judul, author, content, images } = req.body;
+
+  const schema = {
+    judul: { type: "string", min: 3, max: 255 },
+    author: { type: "string", min: 3, max: 255 },
+    content: { type: "string", min: 3 },
+  };
+
+  const validate = v.validate(req.body, schema);
+
+  if (validate.length) {
+    return errorResponse(res, validate, 400);
+  }
 
   try {
     await article.update({
@@ -138,7 +157,7 @@ export const updateArticle = async (req, res) => {
       article.article_images = uploadedImages;
     }
 
-    return successResponse(res, article, 'Artikel berhasil diperbarui', 200);
+    return successResponse(res, article, 'article updated', 200);
   } catch (error) {
     console.log(error);
     return errorResponse(res);
@@ -153,7 +172,7 @@ export const deleteArticle = async (req, res) => {
   });
 
   if (!article) {
-    return errorResponse(res, 'Artikel tidak ditemukan', 404);
+    return errorResponse(res, 'article not found', 404);
   }
 
   try {
@@ -167,7 +186,7 @@ export const deleteArticle = async (req, res) => {
 
     await article.destroy();
 
-    return successResponse(res, null, 'Artikel berhasil dihapus', 200);
+    return successResponse(res, null, 'article deleted', 200);
   } catch (error) {
     console.log(error);
     return errorResponse(res);

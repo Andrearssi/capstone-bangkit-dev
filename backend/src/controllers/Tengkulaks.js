@@ -31,11 +31,11 @@ export const getTengkulakById = async (req, res) => {
 };
 
 export const createTengkulak = async (req, res) => {
-  const { nama, alamat, no } = req.body;
+  let { nama, alamat, no } = req.body;
   const schema = {
-    nama: { type: "string", min: 3, max: 255},
+    nama: { type: "string", min: 3, max: 255 },
     alamat: { type: "string", min: 3, max: 255 },
-    no: { type: "string", min: 3, max: 12 }
+    no: [{ type: "string", min: 3, max: 12 }],
   };
   const validate = v.validate(req.body, schema);
   if (validate.length) {
@@ -60,6 +60,7 @@ export const createTengkulak = async (req, res) => {
 };
 
 export const updateTengkulak = async (req, res) => {
+  const { nama, alamat, no } = req.body;
   const { id } = req.params;
 
   const checkTengkulak = await Tengkulaks.findByPk(id);
@@ -69,17 +70,27 @@ export const updateTengkulak = async (req, res) => {
   }
 
   const schema = {
-    nama: { type: "string", min: 3, max: 255},
-    alamat: { type: "string", min: 3, max: 255 },
-    no: { type: "string", min: 3, max: 12 }
+    nama: { type: "string", min: 3, max: 255, optional: true },
+    alamat: { type: "string", min: 3, max: 255, optional: true },
+    no: { type: "string", min: 3, max: 12, optional: true },
   };
 
   const validate = v.validate(req.body, schema);
   if (validate.length) {
     return errorResponse(res, validate, 400);
   }
-  await checkTengkulak.update(req.body);
-  return successResponse(res, req.body, "success", 201);
+
+  try {
+    await checkTengkulak.update({
+      nama: nama,
+      alamat: alamat,
+      no: no,
+    });
+    return successResponse(res, checkTengkulak, "success", 201);
+  } catch (error) {
+    console.log(error);
+    return errorResponse(res);
+  }
 };
 
 export const deleteTengkulak = async (req, res) => {

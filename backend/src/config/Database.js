@@ -2,10 +2,10 @@
 import { Sequelize } from 'sequelize';
 
 const db = new Sequelize({
-  username: 'andrea',
-  password: '123456',
-  database: 'berasai',
-  host: '34.101.59.88',
+  username: 'root',
+  password: '',
+  database: 'andrea',
+  host: '127.0.0.1',
   dialect: 'mysql',
 });
 

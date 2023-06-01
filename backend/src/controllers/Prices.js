@@ -8,9 +8,7 @@ const v = new Validator();
 
 export const getPrices = async (req, res) => {
   try {
-    const prices = await Prices.findAll({
-      attributes: ["harga", "provinsi"],
-    });
+    const prices = await Prices.findAll();
     return successResponse(res, prices);
   } catch (error) {
     console.log(error);
@@ -19,13 +17,11 @@ export const getPrices = async (req, res) => {
 };
 
 export const getPricesById = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const price = await Prices.findByPk(id, {
-      attributes: ["harga", "provinsi"],
-    });
+    const price = await Prices.findByPk(id);
     if (!price) {
-      return errorResponse(res, "Price not found", 404);
+      return errorResponse(res, "price not found", 404);
     }
     return successResponse(res, price);
   } catch (error) {
@@ -37,7 +33,7 @@ export const getPricesById = async (req, res) => {
 export const createPrice = async (req, res) => {
   let { harga, provinsi } = req.body;
   const schema = {
-    harga: { type: "string" },
+    harga: { type: "string", min: 3, max: 255 },
     provinsi: { type: "string", min: 3, max: 255 },
   };
   const validate = v.validate(req.body, schema);
@@ -63,32 +59,36 @@ export const createPrice = async (req, res) => {
 
 export const updatePrice = async (req, res) => {
   const { id } = req.params;
+  let { harga, provinsi } = req.body;
 
   const checkPrice = await Prices.findByPk(id);
 
   if (!checkPrice) {
-    return errorResponse(res, "Price not found", 404);
+    return errorResponse(res, "price not found", 404);
   }
   const schema = {
-    harga: {
-      type: "number",
-      positive: true,
-      integer: true,
-      optional: true,
-    },
-    provinsi: {
-      type: "string",
-      min: 3,
-      max: 255,
-      optional: true,
-    },
+    harga: { type: "string", min: 3, max: 255 },
+    provinsi: { type: "string", min: 3, max: 255 },
   };
   const validate = v.validate(req.body, schema);
   if (validate.length) {
     return errorResponse(res, validate, 400);
   }
-  await checkPrice.update(req.body);
-  return successResponse(res, req.body, "success", 201);
+  if (!harga.match(/^\d*(\.\d+)?$/)) {
+    return errorResponse(res, "harga is'n number!", 400);
+  }
+  harga = parseInt(harga);
+  try {
+    const inserted = {
+      harga,
+      provinsi,
+    };
+    await checkPrice.update(inserted);
+    return successResponse(res, inserted, "success", 201);
+  } catch (error) {
+    console.log(error);
+    return errorResponse(res);
+  }
 };
 
 export const deletePrice = async (req, res) => {
@@ -97,8 +97,14 @@ export const deletePrice = async (req, res) => {
   const price = await Prices.findByPk(id);
 
   if (!price) {
-    return errorResponse(res, "Price not found", 404);
+    return errorResponse(res, "price not found", 404);
   }
-  await price.destroy(id);
-  return successResponse(res);
+
+  try {
+    await price.destroy(id);
+    return successResponse(res);
+  } catch (error) {
+    console.log(error);
+    return errorResponse(res);
+  }
 };

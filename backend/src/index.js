@@ -46,7 +46,7 @@ app.use(usersRouter);
 app.use("/articles", articlesRouter);
 app.use("/prices", pricesRouter);
 app.use("/tengkulaks", tengkulaksRouter)
-;
+  ;
 
 app.listen(5000, () => {
   console.log("Server running at port 5000");
