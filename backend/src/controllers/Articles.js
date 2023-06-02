@@ -1,9 +1,12 @@
 import { Storage } from '@google-cloud/storage';
 import { v4 as uuidv4 } from 'uuid';
+import Validator from "fastest-validator";
 import { Articles, ArticleImages } from '../models/ArticlesModel.js';
 import { errorResponse, successResponse } from '../config/Response.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+
+const v = new Validator();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
