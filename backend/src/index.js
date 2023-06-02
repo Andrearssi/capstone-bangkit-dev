@@ -11,6 +11,10 @@ import usersRouter from "./routes/Users.js";
 import articlesRouter from "./routes/Articles.js";
 import pricesRouter from "./routes/Prices.js";
 import tengkulaksRouter from "./routes/Tengkulaks.js";
+import { ArticleImages, Articles } from "./models/ArticlesModel.js";
+import Prices from "./models/PricesModel.js";
+import Tengkulaks from "./models/TengkulaksModel.js";
+import Users from "./models/UsersModel.js";
 
 dotenv.config();
 

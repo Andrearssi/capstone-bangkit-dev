@@ -1,19 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <a href="price.html">Price</a>
-    <form action="/articles" method="POST" enctype="multipart/form-data">
-        <input type="text" name="judul" placeholder="judul">
-        <input type="text" name="author" placeholder="author">
-        <textarea name="content" id="" cols="30" rows="10" placeholder="content"></textarea>
-        <input type="file" name="images" multiple>
-        <button type="submit">Unggah</button>
-    </form>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <a href="price.html">Prices</a>
+      <a href="tengkulaks.html">Tengkulaks</a>
+      <h1>INPUT DATA Articles</h1>
+      <form action="/articles" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="inputJudul" class="form-label">Judul</label>
+          <input
+            type="text"
+            class="form-control"
+            id="inputJudul"
+            name="judul"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="inputAuthor" class="form-label">Author</label>
+          <input
+            type="text"
+            class="form-control"
+            id="inputAuthor"
+            name="author"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="inputContent" class="form-label">Content</label>
+          <textarea
+            class="form-control"
+            id="inputContent"
+            rows="3"
+            name="content"
+          ></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="formFile" class="form-label">Gambar</label>
+          <input
+            class="form-control"
+            type="file"
+            id="formFile"
+            name="images"
+            multiple
+          />
+        </div>
+
+        <input type="submit" class="btn btn-primary" />
+      </form>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

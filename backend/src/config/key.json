@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "dark-stratum-379901",
+  "private_key_id": "3e10e56ae2ac85dbfb28cb8af16b264e8836d5c0",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC0lROR7m/6n5Pc\nlr8Kj7e2DgdR2zDdjoAMCBxgg8fM4Rz/yuz0iNRWoroAh4j3fxwYqKX5WQGmn4v9\nMwN9B0t2zoY9250UovA+qrh4UqnTJpOK5G22ZqL8NwXFE2uUR6Us9tx66Y/ixPrB\n0g3qvGFdMpOJ65cneWrN6kg5IUpdY5gMgHnhNOd06nphVnrNZK8HEZOpaYRBFdoB\nn/nEpLsSHDBflLttEWAUBHAo/BKShhlJ93t6iGrgECSJ+v1mzdMBt6xFdfJBOweV\ndo+yLmH9LSFobk1GKAvIP0egLOw4TRh/5qFGk76aBdAq1a1vferJoBYDQYHobNEb\n6tWc54GNAgMBAAECggEAAyhGZS2CNkgB/RuCxrvIQvAwI7fSGHkFgGc1nYU+CzUj\n1DtixzoLghjYRI71hoiORH0/hjlFdIvsKD2XqwWIDvXdKG5KIc3O8BmPMGo731TP\nervGSQNtiBg9nXE2MnTKOmTjs2i9ut0l9dAnGv8lDTqHlG0Jpj5Syru+DqvxVjM2\n+8ygP2E159jaFLNK/aynEPuNWmznrBSHqWh+1vXo00VQYso/aGVcNQr3BgjrInql\nxATFgjw1/lVisTv0gxpag7GRIzDRZy+5KCGnhsdPdnWyhRd66urOqbWsRRSp2KCl\nIILpzC9KPvc15AqZGqI5hK5ynzEj3BD8CvN/r5Xu1QKBgQD45L+tCUZpmG1eOA5J\nvvn1I7MYSWqSWZK8KfVFwKPYkdrWTWrP8wMgQHtXDR0zDKJbvmqCKeZISZygzxE2\nTDSEe/dlXzGl4SGrj3HZEonJr4zYQhcBKcWQI1ZxMkBMp2Y3CL/CcHBEuWOZHdy5\nZnZgHMnzaJuAbGfBLsI6MUlGHwKBgQC5vQRK4R3rUi+iLodLjdeeTFzoJoVasEir\n+qz6SfzpQkZX+SCm32jaNfVoKldyWDPLoYRFRinjNUcEgFR3bZRA8pE000Eyjd7g\nSOzSGjzYYOZQgXY41yfyWk9jlgamvvmTG6vDr5BwBaZ1xgqJ3LAvWhXWBZbNWd9Q\nF6VSL4qK0wKBgQDKdVitqsPKFaGxaKvGtUCidb2zXdUA4zgHM6I+cStWeZ6ngCYI\nrca3L3ylHRfJdNeFBWmiI+8ckjSEYqu/nVGDC0v8++ho5K783Rxg1UGb+9738xq/\naXk5fGVOgu/m6qysy8MgqVHJtXwdCzuG3KAiIojsJQWI+6WScTSxHXJbRQKBgQCD\nJ1JRoZaj5TvXdK16j2Uy1U9Bann96L7YGcFtVzNsbq0HT9ZbnyQF+dYZQNTQ3DFu\n19VzqTDIzIUiS4/ZaRonpmEcgRPno8A+daAsV/ShAgN/03rsdhkyC81FT9nQgsfu\ntbpbCqyePY8mWLp2UMxkE2OZ5gZvaMfEYX4Og517mwKBgBl5l5mNq8hGiYU2TZhr\nYwg6I/TaIeXzPOTKiPgNLcrQ60cLIouEVd+2qqEpm1WG/F8EimShc5AAFQJoczeR\n0Jz0loNaySZayH/71UXkt9uifxjzJO85CspM2snrkrIfIi2qsme83haD8Z1eTz+/\nvt7nHX8GSN2atvDIlkZdc8tB\n-----END PRIVATE KEY-----\n",
+  "client_email": "bucket-admin@dark-stratum-379901.iam.gserviceaccount.com",
+  "client_id": "102844148358319776584",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/bucket-admin%40dark-stratum-379901.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

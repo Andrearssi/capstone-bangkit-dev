@@ -12,11 +12,11 @@ const path = await import('path');
 const keyFilename = path.resolve(__dirname, '..', 'config', 'key.json');
 
 const storage = new Storage({
-  projectId: 'testing-backend-388116',
+  projectId: 'dark-stratum-379901',
   keyFilename,
 });
 
-const bucketName = 'images-berasai';
+const bucketName = 'capstone-test2';
 
 export const getArticles = async (req, res) => {
   try {
