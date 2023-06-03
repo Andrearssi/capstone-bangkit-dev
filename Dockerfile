@@ -12,7 +12,7 @@ COPY ./backend .
 RUN npm install
 
 # Tampilkan port yang akan digunakan oleh aplikasi
-EXPOSE 8080
+EXPOSE 5000
 
 # Jalankan aplikasi saat container berjalan
 CMD [ "npm", "start" ]
