@@ -3,6 +3,7 @@ import Login from "./components/Login";
 import Dashboard from './components/Dashboard';
 import Articles from './components/Articles';
 import NotFound from './components/NotFound';
+import Prices from './components/Prices';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Route path='/*' element={<NotFound/>}/>
       <Route path='/dashboard' element={<Dashboard />}/>
       <Route path='/articles' element={<Articles />}/>
+      <Route path='/prices' element={<Prices/>}/>
     </Routes>
     </BrowserRouter>
   );
