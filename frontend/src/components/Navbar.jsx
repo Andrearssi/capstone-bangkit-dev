@@ -9,6 +9,7 @@ import {
   Modal,
   Form,
   FormControl,
+  Container,
 } from "react-bootstrap";
 
 const LogoutModal = ({ showModal, isLoading, confirmLogout, cancelLogout }) => {
@@ -58,8 +59,8 @@ const Navigation = () => {
   }
 
   return (
-    <Navbar bg="light" expand="lg">
-      <div className="container">
+    <Container>
+      <Navbar expand="lg">
         <Navbar.Brand href="#">Navbar</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -99,8 +100,8 @@ const Navigation = () => {
           confirmLogout={confirmLogout}
           cancelLogout={cancelLogout}
         />
-      </div>
-    </Navbar>
+      </Navbar>
+    </Container>
   );
 };
 

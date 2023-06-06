@@ -101,10 +101,18 @@ const Articles = () => {
                               ))}
                             </td>
                             <td>
-                              <Link to={`edit/${article.id}`} className="btn btn-success mb-2" style={{width: '80px'}}>
+                              <Link
+                                to={`edit/${article.id}`}
+                                className="btn btn-success mb-2"
+                                style={{ width: "80px" }}
+                              >
                                 Edit
                               </Link>
-                              <button onClick={() => deleteArticle(article.id)} className="btn btn-danger" style={{width: '80px'}}>
+                              <button
+                                onClick={() => deleteArticle(article.id)}
+                                className="btn btn-danger"
+                                style={{ width: "80px" }}
+                              >
                                 Delete
                               </button>
                             </td>
