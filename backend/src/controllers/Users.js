@@ -111,22 +111,24 @@ export const Login = async (req, res) => {
 };
 
 export const Logout = async (req, res) => {
-  const refreshtoken = req.cookies.refreshToken;
-  if (!refreshtoken) return res.sendStatus(204);
-  const user = await Users.findAll({
-    where: {
-      refresh_token: refreshtoken,
-    },
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) {
+    return errorResponse(res, 'Cookie not found', 400);
+  }
+  const user = await Users.findOne({
+    where: { refresh_token: refreshToken },
   });
-  if (!user[0]) return res.sendStatus(204);
-  const userId = user[0].id;
+  if (!user) {
+    return errorResponse(res, 'User not found', 400);
+  }
+  const userId = user.id;
   await Users.update(
     { refresh_token: null },
     {
-      where: {
-        id: userId,
-      },
+      where: { id: userId },
     },
   );
-  return res.clearCookie('refreshToken');
+  res.clearCookie('refreshToken');
+  return successResponse(res, null, 'Logout successful');
 };
+

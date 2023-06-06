@@ -8,7 +8,7 @@ import {
 
 const usersRouter = express.Router();
 
-usersRouter.get('/users', verifyToken, getUsers);
+usersRouter.get('/users', getUsers);
 usersRouter.post('/users', Register);
 usersRouter.post('/login', Login);
 usersRouter.get('/token', refreshToken);
