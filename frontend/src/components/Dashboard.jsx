@@ -2,10 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Navigation from "./Navbar";
-import { Spinner, Table, Container } from "react-bootstrap";
+import {
+  Spinner,
+  Table,
+  Container,
+  Modal,
+  Form,
+  Button,
+} from "react-bootstrap";
 import checkToken from "../checkToken.js";
 import jwt_decode from "jwt-decode";
-
 
 const Dashboard = () => {
   const [name, setName] = useState("");
@@ -13,6 +19,13 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [expire, setExpire] = useState("");
   const [isLoading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [newUser, setNewUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confPassword: "",
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,9 +68,34 @@ const Dashboard = () => {
     setLoading(false);
   };
 
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    try {
+      await axiosJWT.post("http://localhost:5000/users", newUser, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setNewUser({
+        name: "",
+        email: "",
+        password: "",
+        confPassword: "",
+      });
+      setShowModal(false);
+      getUsers();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const deleteUser = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/users/${id}`);
+      await axiosJWT.delete(`http://localhost:5000/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       getUsers();
     } catch (error) {
       console.log(error);
@@ -78,6 +116,9 @@ const Dashboard = () => {
               <>
                 <Container>
                   <h1 className="text-center">Welcome Back {name}</h1>
+                  <Button variant="primary" onClick={() => setShowModal(true)}>
+                    Create User
+                  </Button>
                   <Table>
                     <thead>
                       <tr>
@@ -95,10 +136,16 @@ const Dashboard = () => {
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>
-                              <Link to={`edit/${user.id}`} className="btn btn-success me-2">
+                              <Link
+                                to={`edit/${user.id}`}
+                                className="btn btn-success me-2"
+                              >
                                 Edit
                               </Link>
-                              <button onClick={() => deleteUser(user.id)} className="btn btn-danger">
+                              <button
+                                onClick={() => deleteUser(user.id)}
+                                className="btn btn-danger"
+                              >
                                 Delete
                               </button>
                             </td>
@@ -115,6 +162,62 @@ const Dashboard = () => {
               </>
             )}
           </div>
+          <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Create User</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={handleCreateUser}>
+                <Form.Group controlId="formName">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter name"
+                    value={newUser.name}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, name: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group controlId="formEmail">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="Enter email"
+                    value={newUser.email}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, email: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group controlId="formPassword">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Enter password"
+                    value={newUser.password}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, password: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group controlId="formConfPassword">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Enter Confirm Password"
+                    value={newUser.confPassword}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, confPassword: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Create
+                </Button>
+              </Form>
+            </Modal.Body>
+          </Modal>
         </>
       ) : null}
     </>
