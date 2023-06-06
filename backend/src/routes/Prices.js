@@ -1,15 +1,20 @@
 /* eslint-disable linebreak-style */
-import express from 'express';
+import express from "express";
 import {
-  getPrices, getPricesById, createPrice, updatePrice, deletePrice,
-} from '../controllers/Prices.js';
+  getPrices,
+  getPricesById,
+  createPrice,
+  updatePrice,
+  deletePrice,
+} from "../controllers/Prices.js";
+import verifyToken from "../middleware/verifyToken.js";
 
 const pricesRouter = express.Router();
 
-pricesRouter.get('/', getPrices);
-pricesRouter.post('/', createPrice);
-pricesRouter.get('/:id', getPricesById);
-pricesRouter.put('/:id', updatePrice);
-pricesRouter.delete('/:id', deletePrice);
+pricesRouter.get("/", getPrices);
+pricesRouter.post("/", verifyToken, createPrice);
+pricesRouter.get("/:id", verifyToken, getPricesById);
+pricesRouter.put("/:id", verifyToken, updatePrice);
+pricesRouter.delete("/:id", verifyToken, deletePrice);
 
 export default pricesRouter;
