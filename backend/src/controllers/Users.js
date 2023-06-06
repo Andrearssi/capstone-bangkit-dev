@@ -110,6 +110,24 @@ export const Login = async (req, res) => {
   }
 };
 
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  const user = await Users.findByPk(id);
+
+  if (!user) {
+    return errorResponse(res, "user not found", 404);
+  }
+
+  try {
+    await user.destroy(id);
+    return successResponse(res);
+  } catch (error) {
+    console.log(error);
+    return errorResponse(res);
+  }
+};
+
 export const Logout = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
