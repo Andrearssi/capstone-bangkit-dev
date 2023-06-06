@@ -41,7 +41,7 @@ const Prices = () => {
   );
 
   const getPrices = async () => {
-    const response = await axios.get("http://localhost:5000/prices", {
+    const response = await axiosJWT.get("http://localhost:5000/prices", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -51,7 +51,7 @@ const Prices = () => {
 
   const deletePrice = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/prices/${id}`);
+      await axiosJWT.delete(`http://localhost:5000/prices/${id}`);
       getPrices();
     } catch (error) {
       console.log(error);
