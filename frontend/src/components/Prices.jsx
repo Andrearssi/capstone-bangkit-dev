@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Spinner, Table, Container } from "react-bootstrap";
+import {
+  Spinner,
+  Table,
+  Container,
+  Modal,
+  Form,
+  Button,
+} from "react-bootstrap";
 import Navigation from "./Navbar";
 import checkToken from "../checkToken.js";
 import jwt_decode from "jwt-decode";
@@ -13,12 +20,17 @@ const Prices = () => {
   const [token, setToken] = useState("");
   const [expire, setExpire] = useState("");
   const [isLoading, setLoading] = useState(false);
+  const [createModal, setcreateModal] = useState(false);
+  const [newPrice, setnewPrice] = useState({
+    provinsi: "",
+    harga: "",
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
     checkToken(setToken, setName, setExpire, navigate);
     getPrices();
-  }, []);
+  }, [navigate]);
 
   const axiosJWT = axios.create();
 
@@ -41,13 +53,38 @@ const Prices = () => {
   );
 
   const getPrices = async () => {
-    const response = await axiosJWT.get("http://localhost:5000/prices", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    setPrices(response.data.data);
-  }
+    setLoading(true);
+    try {
+      const response = await axiosJWT.get("http://localhost:5000/prices", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setPrices(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
+
+  const handleCreatePrice = async (e) => {
+    e.preventDefault();
+    try {
+      await axiosJWT.post("http://localhost:5000/prices", newPrice, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setnewPrice({
+        harga: "",
+        provinsi: "",
+      });
+      setcreateModal(false);
+      getPrices();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const deletePrice = async (id) => {
     try {
@@ -57,7 +94,7 @@ const Prices = () => {
       console.log(error);
     }
   };
-  
+
   const formatRupiah = (angka) => {
     return numeral(angka).format("0,0");
   };
@@ -76,6 +113,12 @@ const Prices = () => {
               <>
                 <Container>
                   <h1 className="text-center">Welcome Back {name}</h1>
+                  <Button
+                    variant="primary"
+                    onClick={() => setcreateModal(true)}
+                  >
+                    Create User
+                  </Button>
                   <Table>
                     <thead>
                       <tr>
@@ -121,10 +164,44 @@ const Prices = () => {
               </>
             )}
           </div>
+          <Modal show={createModal} onHide={() => setcreateModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Create User</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={handleCreatePrice}>
+                <Form.Group controlId="formProvinsi">
+                  <Form.Label>Provinsi</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter province"
+                    value={newPrice.provinsi}
+                    onChange={(e) =>
+                      setnewPrice({ ...newPrice, provinsi: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group controlId="formHarga">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Enter price"
+                    value={newPrice.harga}
+                    onChange={(e) =>
+                      setnewPrice({ ...newPrice, harga: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Create
+                </Button>
+              </Form>
+            </Modal.Body>
+          </Modal>
         </>
       ) : null}
     </>
   );
-}
+};
 
-export default Prices
+export default Prices;

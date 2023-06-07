@@ -13,24 +13,23 @@ import {
 import checkToken from "../checkToken.js";
 import jwt_decode from "jwt-decode";
 
-const Dashboard = () => {
+const Tengkulaks = () => {
+  const [tengkulaks, setTengkulaks] = useState([]);
   const [name, setName] = useState("");
   const [token, setToken] = useState("");
-  const [users, setUsers] = useState([]);
   const [expire, setExpire] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const [createModal, setcreateModal] = useState(false);
-  const [newUser, setNewUser] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confPassword: "",
+  const [createModal, setCreateModal] = useState(false);
+  const [newTengkulak, setnewTengkulak] = useState({
+    nama: "",
+    alamat: "",
+    no: "",
   });
   const navigate = useNavigate();
 
   useEffect(() => {
     checkToken(setToken, setName, setExpire, navigate);
-    getUsers();
+    getTengkulaks();
   }, [navigate]);
 
   const axiosJWT = axios.create();
@@ -53,50 +52,45 @@ const Dashboard = () => {
     }
   );
 
-  const getUsers = async () => {
+  const getTengkulaks = async () => {
     setLoading(true);
     try {
-      const response = await axiosJWT.get("http://localhost:5000/users", {
+      const response = await axiosJWT.get("http://localhost:5000/tengkulaks", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setUsers(response.data.data);
+      setTengkulaks(response.data.data);
     } catch (error) {
       console.log(error);
     }
     setLoading(false);
   };
 
-  const handleCreateUser = async (e) => {
+  const handleCreateTengkulak = async (e) => {
     e.preventDefault();
     try {
-      await axiosJWT.post("http://localhost:5000/users", newUser, {
+      await axiosJWT.post("http://localhost:5000/tengkulaks", newTengkulak, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setNewUser({
-        name: "",
-        email: "",
-        password: "",
-        confPassword: "",
+      setnewTengkulak({
+        nama: "",
+        alamat: "",
+        no: "",
       });
-      setcreateModal(false);
-      getUsers();
+      setCreateModal(false);
+      getTengkulaks();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const deleteUser = async (id) => {
+  const deleteTengkulak = async (id) => {
     try {
-      await axiosJWT.delete(`http://localhost:5000/users/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      getUsers();
+      await axiosJWT.delete(`http://localhost:5000/tengkulaks/${id}`);
+      getTengkulaks();
     } catch (error) {
       console.log(error);
     }
@@ -118,35 +112,37 @@ const Dashboard = () => {
                   <h1 className="text-center">Welcome Back {name}</h1>
                   <Button
                     variant="primary"
-                    onClick={() => setcreateModal(true)}
+                    onClick={() => setCreateModal(true)}
                   >
-                    Create User
+                    Create Tengkulak
                   </Button>
                   <Table>
                     <thead>
                       <tr>
                         <th>No</th>
                         <th>Nama</th>
-                        <th>Email</th>
+                        <th>Alamat</th>
+                        <th>Nomor WA</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {users.length > 0 ? (
-                        users.map((user, index) => (
-                          <tr key={user.id}>
+                      {tengkulaks.length > 0 ? (
+                        tengkulaks.map((tengkulak, index) => (
+                          <tr key={tengkulak.id}>
                             <td>{index + 1}</td>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
+                            <td>{tengkulak.nama}</td>
+                            <td>{tengkulak.alamat}</td>
+                            <td>{tengkulak.no}</td>
                             <td>
                               <Link
-                                to={`edit/${user.id}`}
+                                to={`edit/${tengkulak.id}`}
                                 className="btn btn-success me-2"
                               >
                                 Edit
                               </Link>
                               <button
-                                onClick={() => deleteUser(user.id)}
+                                onClick={() => deleteTengkulak(tengkulak.id)}
                                 className="btn btn-danger"
                               >
                                 Delete
@@ -156,7 +152,7 @@ const Dashboard = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="3">No users found.</td>
+                          <td colSpan="5" className="text-center">No tengkulaks found.</td>
                         </tr>
                       )}
                     </tbody>
@@ -165,53 +161,42 @@ const Dashboard = () => {
               </>
             )}
           </div>
-          <Modal show={createModal} onHide={() => setcreateModal(false)}>
+          <Modal show={createModal} onHide={() => setCreateModal(false)}>
             <Modal.Header closeButton>
-              <Modal.Title>Create User</Modal.Title>
+              <Modal.Title>Create Tengkulak</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form onSubmit={handleCreateUser}>
+              <Form onSubmit={handleCreateTengkulak}>
                 <Form.Group controlId="formName">
                   <Form.Label>Name</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Enter name"
-                    value={newUser.name}
+                    value={newTengkulak.nama}
                     onChange={(e) =>
-                      setNewUser({ ...newUser, name: e.target.value })
+                      setnewTengkulak({ ...newTengkulak, nama: e.target.value })
                     }
                   />
                 </Form.Group>
-                <Form.Group controlId="formEmail">
-                  <Form.Label>Email</Form.Label>
+                <Form.Group controlId="formAlamat">
+                  <Form.Label>Alamat</Form.Label>
                   <Form.Control
-                    type="email"
-                    placeholder="Enter email"
-                    value={newUser.email}
+                    type="text"
+                    placeholder="Enter alamat"
+                    value={newTengkulak.alamat}
                     onChange={(e) =>
-                      setNewUser({ ...newUser, email: e.target.value })
+                      setnewTengkulak({ ...newTengkulak, alamat: e.target.value })
                     }
                   />
                 </Form.Group>
-                <Form.Group controlId="formPassword">
-                  <Form.Label>Password</Form.Label>
+                <Form.Group controlId="formNo">
+                  <Form.Label>Nomor WA</Form.Label>
                   <Form.Control
-                    type="password"
-                    placeholder="Enter password"
-                    value={newUser.password}
+                    type="number"
+                    placeholder="Enter number WA"
+                    value={newTengkulak.no}
                     onChange={(e) =>
-                      setNewUser({ ...newUser, password: e.target.value })
-                    }
-                  />
-                </Form.Group>
-                <Form.Group controlId="formConfPassword">
-                  <Form.Label>Confirm Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Enter Confirm Password"
-                    value={newUser.confPassword}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, confPassword: e.target.value })
+                      setnewTengkulak({ ...newTengkulak, no: e.target.value })
                     }
                   />
                 </Form.Group>
@@ -227,4 +212,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Tengkulaks;
