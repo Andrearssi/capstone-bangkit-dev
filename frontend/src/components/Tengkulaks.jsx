@@ -127,21 +127,22 @@ const Tengkulaks = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {users.length > 0 ? (
-                        users.map((user, index) => (
-                          <tr key={user.id}>
+                      {tengkulaks.length > 0 ? (
+                        tengkulaks.map((tengkulak, index) => (
+                          <tr key={tengkulak.id}>
                             <td>{index + 1}</td>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
+                            <td>{tengkulak.nama}</td>
+                            <td>{tengkulak.alamat}</td>
+                            <td>{tengkulak.no}</td>
                             <td>
                               <Link
-                                to={`edit/${user.id}`}
+                                to={`edit/${tengkulak.id}`}
                                 className="btn btn-success me-2"
                               >
                                 Edit
                               </Link>
                               <button
-                                onClick={() => deleteTengkulak(user.id)}
+                                onClick={() => deleteTengkulak(tengkulak.id)}
                                 className="btn btn-danger"
                               >
                                 Delete
@@ -151,7 +152,7 @@ const Tengkulaks = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="3">No users found.</td>
+                          <td colSpan="5" className="text-center">No tengkulaks found.</td>
                         </tr>
                       )}
                     </tbody>
