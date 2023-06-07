@@ -12,7 +12,6 @@ import {
 import Navigation from "./Navbar";
 import checkToken from "../checkToken.js";
 import jwt_decode from "jwt-decode";
-import numeral from "numeral";
 
 const Prices = () => {
   const [prices, setPrices] = useState([]);
@@ -95,8 +94,11 @@ const Prices = () => {
     }
   };
 
-  const formatRupiah = (angka) => {
-    return numeral(angka).format("0,0");
+  const formatRupiah = (value) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR'
+    }).format(value);
   };
 
   return (
@@ -134,7 +136,7 @@ const Prices = () => {
                           <tr key={price.id}>
                             <td>{index + 1}</td>
                             <td>{price.provinsi}</td>
-                            <td>Rp. {formatRupiah(price.harga)}</td>
+                            <td>{formatRupiah(price.harga)}</td>
                             <td>
                               <Link
                                 to={`edit/${price.id}`}
