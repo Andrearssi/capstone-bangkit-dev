@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import Navigation from "./Navbar";
 import {
   Spinner,
   Table,
@@ -9,27 +10,26 @@ import {
   Form,
   Button,
 } from "react-bootstrap";
-import Navigation from "./Navbar";
 import checkToken from "../checkToken.js";
 import jwt_decode from "jwt-decode";
-import numeral from "numeral";
 
-const Prices = () => {
-  const [prices, setPrices] = useState([]);
+const Tengkulaks = () => {
+  const [tengkulaks, setTengkulaks] = useState([]);
   const [name, setName] = useState("");
   const [token, setToken] = useState("");
   const [expire, setExpire] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const [createModal, setcreateModal] = useState(false);
-  const [newPrice, setnewPrice] = useState({
-    provinsi: "",
-    harga: "",
+  const [createModal, setCreateModal] = useState(false);
+  const [newTengkulak, setnewTengkulak] = useState({
+    nama: "",
+    alamat: "",
+    no: "",
   });
   const navigate = useNavigate();
 
   useEffect(() => {
     checkToken(setToken, setName, setExpire, navigate);
-    getPrices();
+    getTengkulaks();
   }, [navigate]);
 
   const axiosJWT = axios.create();
@@ -52,51 +52,48 @@ const Prices = () => {
     }
   );
 
-  const getPrices = async () => {
+  const getTengkulaks = async () => {
     setLoading(true);
     try {
-      const response = await axiosJWT.get("http://localhost:5000/prices", {
+      const response = await axiosJWT.get("http://localhost:5000/tengkulaks", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setPrices(response.data.data);
+      setTengkulaks(response.data.data);
     } catch (error) {
       console.log(error);
     }
     setLoading(false);
   };
 
-  const handleCreatePrice = async (e) => {
+  const handleCreateTengkulak = async (e) => {
     e.preventDefault();
     try {
-      await axiosJWT.post("http://localhost:5000/prices", newPrice, {
+      await axiosJWT.post("http://localhost:5000/tengkulaks", newTengkulak, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setnewPrice({
-        harga: "",
-        provinsi: "",
+      setnewTengkulak({
+        nama: "",
+        alamat: "",
+        no: "",
       });
-      setcreateModal(false);
-      getPrices();
+      setCreateModal(false);
+      getTengkulaks();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const deletePrice = async (id) => {
+  const deleteTengkulak = async (id) => {
     try {
-      await axiosJWT.delete(`http://localhost:5000/prices/${id}`);
-      getPrices();
+      await axiosJWT.delete(`http://localhost:5000/tengkulaks/${id}`);
+      getTengkulaks();
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const formatRupiah = (angka) => {
-    return numeral(angka).format("0,0");
   };
 
   return (
@@ -115,38 +112,37 @@ const Prices = () => {
                   <h1 className="text-center">Welcome Back {name}</h1>
                   <Button
                     variant="primary"
-                    onClick={() => setcreateModal(true)}
+                    onClick={() => setCreateModal(true)}
                   >
-                    Create User
+                    Create Tengkulak
                   </Button>
                   <Table>
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>Provinsi</th>
-                        <th>Harga</th>
+                        <th>Nama</th>
+                        <th>Alamat</th>
+                        <th>Nomor WA</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {prices.length > 0 ? (
-                        prices.map((price, index) => (
-                          <tr key={price.id}>
+                      {users.length > 0 ? (
+                        users.map((user, index) => (
+                          <tr key={user.id}>
                             <td>{index + 1}</td>
-                            <td>{price.provinsi}</td>
-                            <td>Rp. {formatRupiah(price.harga)}</td>
+                            <td>{user.name}</td>
+                            <td>{user.email}</td>
                             <td>
                               <Link
-                                to={`edit/${price.id}`}
+                                to={`edit/${user.id}`}
                                 className="btn btn-success me-2"
-                                style={{ width: "80px" }}
                               >
                                 Edit
                               </Link>
                               <button
-                                onClick={() => deletePrice(price.id)}
+                                onClick={() => deleteTengkulak(user.id)}
                                 className="btn btn-danger"
-                                style={{ width: "80px" }}
                               >
                                 Delete
                               </button>
@@ -155,7 +151,7 @@ const Prices = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="4">No prices found.</td>
+                          <td colSpan="3">No users found.</td>
                         </tr>
                       )}
                     </tbody>
@@ -164,31 +160,42 @@ const Prices = () => {
               </>
             )}
           </div>
-          <Modal show={createModal} onHide={() => setcreateModal(false)}>
+          <Modal show={createModal} onHide={() => setCreateModal(false)}>
             <Modal.Header closeButton>
-              <Modal.Title>Create User</Modal.Title>
+              <Modal.Title>Create Tengkulak</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form onSubmit={handleCreatePrice}>
-                <Form.Group controlId="formProvinsi">
-                  <Form.Label>Provinsi</Form.Label>
+              <Form onSubmit={handleCreateTengkulak}>
+                <Form.Group controlId="formName">
+                  <Form.Label>Name</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter province"
-                    value={newPrice.provinsi}
+                    placeholder="Enter name"
+                    value={newTengkulak.nama}
                     onChange={(e) =>
-                      setnewPrice({ ...newPrice, provinsi: e.target.value })
+                      setnewTengkulak({ ...newTengkulak, nama: e.target.value })
                     }
                   />
                 </Form.Group>
-                <Form.Group controlId="formHarga">
-                  <Form.Label>Email</Form.Label>
+                <Form.Group controlId="formAlamat">
+                  <Form.Label>Alamat</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter alamat"
+                    value={newTengkulak.alamat}
+                    onChange={(e) =>
+                      setnewTengkulak({ ...newTengkulak, alamat: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group controlId="formNo">
+                  <Form.Label>Nomor WA</Form.Label>
                   <Form.Control
                     type="number"
-                    placeholder="Enter price"
-                    value={newPrice.harga}
+                    placeholder="Enter number WA"
+                    value={newTengkulak.no}
                     onChange={(e) =>
-                      setnewPrice({ ...newPrice, harga: e.target.value })
+                      setnewTengkulak({ ...newTengkulak, no: e.target.value })
                     }
                   />
                 </Form.Group>
@@ -204,4 +211,4 @@ const Prices = () => {
   );
 };
 
-export default Prices;
+export default Tengkulaks;

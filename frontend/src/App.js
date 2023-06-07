@@ -4,6 +4,7 @@ import Dashboard from './components/Dashboard';
 import Articles from './components/Articles';
 import NotFound from './components/NotFound';
 import Prices from './components/Prices';
+import Tengkulaks from './components/Tengkulaks';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path='/dashboard' element={<Dashboard />}/>
       <Route path='/articles' element={<Articles />}/>
       <Route path='/prices' element={<Prices/>}/>
+      <Route path='/tengkulaks' element={<Tengkulaks/>}/>
     </Routes>
     </BrowserRouter>
   );
