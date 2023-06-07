@@ -112,7 +112,7 @@ const Prices = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="4">No prices found.</td>
+                          <td colSpan="4" className="text-center">No prices found.</td>
                         </tr>
                       )}
                     </tbody>

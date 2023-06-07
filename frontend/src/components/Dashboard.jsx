@@ -19,7 +19,7 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [expire, setExpire] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [createModal, setcreateModal] = useState(false);
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -82,7 +82,7 @@ const Dashboard = () => {
         password: "",
         confPassword: "",
       });
-      setShowModal(false);
+      setcreateModal(false);
       getUsers();
     } catch (error) {
       console.log(error);
@@ -116,7 +116,10 @@ const Dashboard = () => {
               <>
                 <Container>
                   <h1 className="text-center">Welcome Back {name}</h1>
-                  <Button variant="primary" onClick={() => setShowModal(true)}>
+                  <Button
+                    variant="primary"
+                    onClick={() => setcreateModal(true)}
+                  >
                     Create User
                   </Button>
                   <Table>
@@ -162,7 +165,7 @@ const Dashboard = () => {
               </>
             )}
           </div>
-          <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal show={createModal} onHide={() => setcreateModal(false)}>
             <Modal.Header closeButton>
               <Modal.Title>Create User</Modal.Title>
             </Modal.Header>

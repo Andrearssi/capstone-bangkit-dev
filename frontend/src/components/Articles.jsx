@@ -95,7 +95,7 @@ const Articles = () => {
                                 <img
                                   key={image.id}
                                   src={image.imagePath}
-                                  alt={`Article Image ${image.id}`}
+                                  alt={`Gambar ${article.judul}`}
                                   style={{ width: "200px", height: "auto" }}
                                 />
                               ))}
@@ -120,7 +120,7 @@ const Articles = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="4">No Articles found.</td>
+                          <td colSpan="6">No Articles found.</td>
                         </tr>
                       )}
                     </tbody>
