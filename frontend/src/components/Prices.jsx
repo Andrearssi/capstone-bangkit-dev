@@ -54,7 +54,7 @@ const Prices = () => {
   const getPrices = async () => {
     setLoading(true);
     try {
-      const response = await axiosJWT.get("http://localhost:5000/prices", {
+      const response = await axios.get("http://localhost:5000/prices", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

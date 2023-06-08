@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navigation from "./Navbar";
 import {
@@ -20,6 +20,8 @@ const Tengkulaks = () => {
   const [expire, setExpire] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [createModal, setCreateModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const [newTengkulak, setnewTengkulak] = useState({
     nama: "",
     alamat: "",
@@ -55,7 +57,7 @@ const Tengkulaks = () => {
   const getTengkulaks = async () => {
     setLoading(true);
     try {
-      const response = await axiosJWT.get("http://localhost:5000/tengkulaks", {
+      const response = await axios.get("http://localhost:5000/tengkulaks", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -135,24 +137,26 @@ const Tengkulaks = () => {
                             <td>{tengkulak.alamat}</td>
                             <td>{tengkulak.no}</td>
                             <td>
-                              <Link
-                                to={`edit/${tengkulak.id}`}
-                                className="btn btn-success me-2"
+                              <Button
+                                variant="success"
+                                onClick={() => setEditModal(true)}
                               >
                                 Edit
-                              </Link>
-                              <button
-                                onClick={() => deleteTengkulak(tengkulak.id)}
-                                className="btn btn-danger"
+                              </Button>
+                              <Button
+                                variant="danger"
+                                onClick={() => setEditModal(true)}
                               >
-                                Delete
-                              </button>
+                                Edit
+                              </Button>
                             </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="5" className="text-center">No tengkulaks found.</td>
+                          <td colSpan="5" className="text-center">
+                            No tengkulaks found.
+                          </td>
                         </tr>
                       )}
                     </tbody>
@@ -185,7 +189,58 @@ const Tengkulaks = () => {
                     placeholder="Enter alamat"
                     value={newTengkulak.alamat}
                     onChange={(e) =>
-                      setnewTengkulak({ ...newTengkulak, alamat: e.target.value })
+                      setnewTengkulak({
+                        ...newTengkulak,
+                        alamat: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group controlId="formNo">
+                  <Form.Label>Nomor WA</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Enter number WA"
+                    value={newTengkulak.no}
+                    onChange={(e) =>
+                      setnewTengkulak({ ...newTengkulak, no: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Create
+                </Button>
+              </Form>
+            </Modal.Body>
+          </Modal>
+          <Modal show={editModal} onHide={() => setEditModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Create Tengkulak</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={handleCreateTengkulak}>
+                <Form.Group controlId="formName">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter name"
+                    value={newTengkulak.nama}
+                    onChange={(e) =>
+                      setnewTengkulak({ ...newTengkulak, nama: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group controlId="formAlamat">
+                  <Form.Label>Alamat</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter alamat"
+                    value={newTengkulak.alamat}
+                    onChange={(e) =>
+                      setnewTengkulak({
+                        ...newTengkulak,
+                        alamat: e.target.value,
+                      })
                     }
                   />
                 </Form.Group>
